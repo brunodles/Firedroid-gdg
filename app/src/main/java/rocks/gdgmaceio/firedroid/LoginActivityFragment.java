@@ -1,6 +1,7 @@
 package rocks.gdgmaceio.firedroid;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,9 +50,20 @@ public class LoginActivityFragment extends Fragment {
     private View.OnClickListener onSignInClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            FirebaseHelper.get().authWithPassword(email.getText().toString(), password.getText().toString(), signInListener);
+            FirebaseHelper.get().authWithPassword(emailAsString(), passwordAsString(), signInListener);
         }
     };
+
+    @NonNull
+    private String passwordAsString() {
+        return password.getText().toString();
+    }
+
+    @NonNull
+    private String emailAsString() {
+        return email.getText().toString();
+    }
+
     private Firebase.AuthResultHandler signInListener = new Firebase.AuthResultHandler() {
         @Override
         public void onAuthenticated(AuthData authData) {
@@ -66,12 +78,13 @@ public class LoginActivityFragment extends Fragment {
     private View.OnClickListener onResetPasswordClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            
         }
     };
     private View.OnClickListener onSignUpClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            FirebaseHelper.get().createUser(email.getText().toString(), password.getText().toString(), registerListener);
+            FirebaseHelper.get().createUser(emailAsString(), passwordAsString(), registerListener);
         }
     };
     private Firebase.ResultHandler registerListener = new Firebase.ResultHandler() {
