@@ -35,5 +35,28 @@ public class LoginActivityFragment extends Fragment {
         signIn = (Button) view.findViewById(R.id.sign_in);
         signUp = (Button) view.findViewById(R.id.sign_up);
         resetPassword = (Button) view.findViewById(R.id.reset_password);
+
+        signIn.setOnClickListener(onSignInClickListener);
+        signUp.setOnClickListener(onSignUpClickListener);
+        resetPassword.setOnClickListener(onResetPasswordClickListener);
     }
+
+    private View.OnClickListener onSignInClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+        }
+    };
+    private View.OnClickListener onResetPasswordClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+        }
+    };
+    private View.OnClickListener onSignUpClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+        }
+    };
 }
