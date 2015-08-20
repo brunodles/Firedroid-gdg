@@ -67,7 +67,6 @@ public class LoginActivityFragment extends Fragment {
     private Firebase.AuthResultHandler signInListener = new Firebase.AuthResultHandler() {
         @Override
         public void onAuthenticated(AuthData authData) {
-
         }
 
         @Override
@@ -78,7 +77,18 @@ public class LoginActivityFragment extends Fragment {
     private View.OnClickListener onResetPasswordClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            
+            FirebaseHelper.get().resetPassword(emailAsString(), resetPasswordListener);
+        }
+    };
+    private Firebase.ResultHandler resetPasswordListener = new Firebase.ResultHandler() {
+        @Override
+        public void onSuccess() {
+            Toast.makeText(LoginActivityFragment.this.getActivity(), "Hey, look at your email!", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onError(FirebaseError firebaseError) {
+            Toast.makeText(LoginActivityFragment.this.getActivity(), "Error segind password change email", Toast.LENGTH_SHORT).show();
         }
     };
     private View.OnClickListener onSignUpClickListener = new View.OnClickListener() {
