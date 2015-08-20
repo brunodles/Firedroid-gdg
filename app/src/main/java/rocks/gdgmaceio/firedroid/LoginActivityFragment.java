@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
@@ -48,7 +49,18 @@ public class LoginActivityFragment extends Fragment {
     private View.OnClickListener onSignInClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            FirebaseHelper.get().authWithPassword(email.getText().toString(), password.getText().toString(), signInListener);
+        }
+    };
+    private Firebase.AuthResultHandler signInListener = new Firebase.AuthResultHandler() {
+        @Override
+        public void onAuthenticated(AuthData authData) {
 
+        }
+
+        @Override
+        public void onAuthenticationError(FirebaseError firebaseError) {
+            Toast.makeText(LoginActivityFragment.this.getActivity(), "Can't auth user", Toast.LENGTH_SHORT).show();
         }
     };
     private View.OnClickListener onResetPasswordClickListener = new View.OnClickListener() {
