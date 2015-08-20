@@ -7,6 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 
 
 public class LoginActivityFragment extends Fragment {
@@ -50,13 +54,23 @@ public class LoginActivityFragment extends Fragment {
     private View.OnClickListener onResetPasswordClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
         }
     };
     private View.OnClickListener onSignUpClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            FirebaseHelper.get().createUser(email.getText().toString(), password.getText().toString(), registerListener);
+        }
+    };
+    private Firebase.ResultHandler registerListener = new Firebase.ResultHandler() {
+        @Override
+        public void onSuccess() {
 
+        }
+
+        @Override
+        public void onError(FirebaseError firebaseError) {
+            Toast.makeText(LoginActivityFragment.this.getActivity(), "Error creating new user", Toast.LENGTH_SHORT).show();
         }
     };
 }
