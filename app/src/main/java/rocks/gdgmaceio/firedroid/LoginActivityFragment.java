@@ -1,5 +1,6 @@
 package rocks.gdgmaceio.firedroid;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -23,7 +24,18 @@ public class LoginActivityFragment extends Fragment {
     private Button signUp;
     private Button resetPassword;
 
+    private Listener listener;
+
     public LoginActivityFragment() {
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof Listener)
+            listener = (Listener) activity;
+        else
+            throw new IllegalArgumentException("Must implement the LoginActivityFragment.Listener");
     }
 
     @Override
@@ -67,6 +79,7 @@ public class LoginActivityFragment extends Fragment {
     private Firebase.AuthResultHandler signInListener = new Firebase.AuthResultHandler() {
         @Override
         public void onAuthenticated(AuthData authData) {
+            goToChat();
         }
 
         @Override
@@ -100,7 +113,7 @@ public class LoginActivityFragment extends Fragment {
     private Firebase.ResultHandler registerListener = new Firebase.ResultHandler() {
         @Override
         public void onSuccess() {
-
+            goToChat();
         }
 
         @Override
@@ -108,4 +121,12 @@ public class LoginActivityFragment extends Fragment {
             Toast.makeText(LoginActivityFragment.this.getActivity(), "Error creating new user", Toast.LENGTH_SHORT).show();
         }
     };
+
+    public void goToChat() {
+        listener.goToChat();
+    }
+
+    public static interface Listener {
+        void goToChat();
+    }
 }
