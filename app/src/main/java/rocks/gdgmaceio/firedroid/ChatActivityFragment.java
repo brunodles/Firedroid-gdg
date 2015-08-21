@@ -9,7 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -48,4 +51,26 @@ public class ChatActivityFragment extends Fragment {
             messageRef.child("author").setValue(firebase.getAuth().getUid());
         }
     };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseHelper.get().child("messages").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                StringBuilder builder = new StringBuilder();
+                for (DataSnapshot child : children) {
+                    builder.append(child.child("text").getValue());
+                    builder.append("\n");
+                }
+                messages.setText(builder.toString());
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
 }
