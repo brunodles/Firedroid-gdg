@@ -62,7 +62,10 @@ public class LoginActivityFragment extends Fragment {
     private View.OnClickListener onSignInClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            FirebaseHelper.get().authWithPassword(emailAsString(), passwordAsString(), signInListener);
+
+            Firebase firebase = FirebaseHelper.get();
+            firebase.unauth();
+            firebase.authWithPassword(emailAsString(), passwordAsString(), signInListener);
         }
     };
 
