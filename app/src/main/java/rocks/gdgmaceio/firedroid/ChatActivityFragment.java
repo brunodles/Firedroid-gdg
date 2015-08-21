@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -40,7 +42,10 @@ public class ChatActivityFragment extends Fragment {
     private View.OnClickListener onSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
+            Firebase firebase = FirebaseHelper.get();
+            Firebase messageRef = firebase.child("messages").push();
+            messageRef.child("text").setValue(message.getText().toString());
+            messageRef.child("author").setValue(firebase.getAuth().getUid());
         }
     };
 }
