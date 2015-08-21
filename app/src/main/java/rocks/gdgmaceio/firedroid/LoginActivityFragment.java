@@ -62,6 +62,7 @@ public class LoginActivityFragment extends Fragment {
     private View.OnClickListener onSignInClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            lock();
 
             Firebase firebase = FirebaseHelper.get();
             firebase.unauth();
@@ -88,29 +89,34 @@ public class LoginActivityFragment extends Fragment {
         @Override
         public void onAuthenticationError(FirebaseError firebaseError) {
             Toast.makeText(LoginActivityFragment.this.getActivity(), "Can't auth user", Toast.LENGTH_SHORT).show();
+            unLock();
         }
     };
     private View.OnClickListener onResetPasswordClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             FirebaseHelper.get().resetPassword(emailAsString(), resetPasswordListener);
+            lock();
         }
     };
     private Firebase.ResultHandler resetPasswordListener = new Firebase.ResultHandler() {
         @Override
         public void onSuccess() {
             Toast.makeText(LoginActivityFragment.this.getActivity(), "Hey, look at your email!", Toast.LENGTH_SHORT).show();
+            unLock();
         }
 
         @Override
         public void onError(FirebaseError firebaseError) {
             Toast.makeText(LoginActivityFragment.this.getActivity(), "Error segind password change email", Toast.LENGTH_SHORT).show();
+            unLock();
         }
     };
     private View.OnClickListener onSignUpClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             FirebaseHelper.get().createUser(emailAsString(), passwordAsString(), registerListener);
+            lock();
         }
     };
     private Firebase.ResultHandler registerListener = new Firebase.ResultHandler() {
@@ -122,8 +128,25 @@ public class LoginActivityFragment extends Fragment {
         @Override
         public void onError(FirebaseError firebaseError) {
             Toast.makeText(LoginActivityFragment.this.getActivity(), "Error creating new user", Toast.LENGTH_SHORT).show();
+            unLock();
         }
     };
+    
+    private void lock(){
+        changeViewsEnabled(false);
+    }
+
+    private void unLock(){
+        changeViewsEnabled(true);
+    }
+
+    private void changeViewsEnabled(boolean isEnabled) {
+        email.setEnabled(isEnabled);
+        password.setEnabled(isEnabled);
+        signIn.setEnabled(isEnabled);
+        signUp.setEnabled(isEnabled);
+        resetPassword.setEnabled(isEnabled);
+    }
 
     public void goToChat() {
         listener.goToChat();
