@@ -16,5 +16,6 @@ public class LoginActivity extends AppCompatActivity implements LoginActivityFra
     public void goToChat() {
         Intent intent = new Intent(this, ChatActivity.class);
         startActivity(intent);
+        finish();
     }
 }
