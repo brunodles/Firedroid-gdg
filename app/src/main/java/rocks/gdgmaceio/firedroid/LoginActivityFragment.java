@@ -122,7 +122,7 @@ public class LoginActivityFragment extends Fragment {
     private Firebase.ResultHandler registerListener = new Firebase.ResultHandler() {
         @Override
         public void onSuccess() {
-            goToChat();
+            onSignInClickListener.onClick(signIn);
         }
 
         @Override
