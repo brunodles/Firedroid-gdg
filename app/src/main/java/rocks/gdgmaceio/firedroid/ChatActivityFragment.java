@@ -2,9 +2,12 @@ package rocks.gdgmaceio.firedroid;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,6 +21,8 @@ import com.firebase.client.ValueEventListener;
  * A placeholder fragment containing a simple view.
  */
 public class ChatActivityFragment extends Fragment {
+
+    private static final String TAG = "ChatActivityFragment";
 
     private EditText message;
     private TextView messages;
@@ -40,17 +45,36 @@ public class ChatActivityFragment extends Fragment {
         send = (Button) view.findViewById(R.id.send);
 
         send.setOnClickListener(onSendClickListener);
+        message.setOnEditorActionListener(onEditorActionListener);
     }
+
+    TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+            Log.d(TAG, "onEditorAction actionId " + actionId);
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                sendMessage();
+                return true;
+            }
+            return false;
+        }
+    };
 
     private View.OnClickListener onSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Firebase firebase = FirebaseHelper.get();
-            Firebase messageRef = firebase.child("messages").push();
-            messageRef.child("text").setValue(message.getText().toString());
-            messageRef.child("author").setValue(firebase.getAuth().getUid());
+            sendMessage();
         }
     };
+
+    private void sendMessage() {
+        Firebase firebase = FirebaseHelper.get();
+        Firebase messageRef = firebase.child("messages").push();
+        messageRef.child("text").setValue(message.getText().toString());
+        messageRef.child("author").setValue(firebase.getAuth().getUid());
+
+        message.setText("");
+    }
 
     @Override
     public void onStart() {
