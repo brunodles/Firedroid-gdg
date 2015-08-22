@@ -10,4 +10,8 @@ public class FirebaseHelper {
     public static Firebase get() {
         return new Firebase("https://firedroid.firebaseio.com/");
     }
+
+    public static Firebase messages() {
+        return get().child("messages");
+    }
 }

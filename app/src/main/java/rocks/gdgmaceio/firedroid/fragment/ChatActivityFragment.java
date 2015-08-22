@@ -16,9 +16,9 @@ import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 
+import rocks.gdgmaceio.firedroid.R;
 import rocks.gdgmaceio.firedroid.adapter.ChatListAdapter;
 import rocks.gdgmaceio.firedroid.helper.FirebaseHelper;
-import rocks.gdgmaceio.firedroid.R;
 import rocks.gdgmaceio.firedroid.model.Message;
 
 /**
@@ -53,7 +53,7 @@ public class ChatActivityFragment extends Fragment {
         send.setOnClickListener(onSendClickListener);
         message.setOnEditorActionListener(onEditorActionListener);
 
-        final Firebase messagesRef = FirebaseHelper.get().child("messages");
+        final Firebase messagesRef = FirebaseHelper.messages();
         adapter = new ChatListAdapter(messagesRef.limitToLast(50));
         messages.setAdapter(adapter);
         adapter.registerDataSetObserver(dataSetObserver);
@@ -84,7 +84,7 @@ public class ChatActivityFragment extends Fragment {
         String text = message.getText().toString();
         String uid = firebase.getAuth().getUid();
 
-        firebase.child("messages")
+        FirebaseHelper.messages()
                 .push()
                 .setValue(new Message(text, uid));
 
