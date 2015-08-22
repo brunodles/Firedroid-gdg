@@ -79,15 +79,8 @@ public class ChatActivityFragment extends Fragment {
     };
 
     private void sendMessage() {
-        Firebase firebase = FirebaseHelper.get();
-
         String text = message.getText().toString();
-        String uid = firebase.getAuth().getUid();
-
-        FirebaseHelper.messages()
-                .push()
-                .setValue(new Message(text, uid));
-
+        FirebaseHelper.sendMessage(text);
         this.message.setText("");
     }
 
