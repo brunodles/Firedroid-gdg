@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -25,6 +25,7 @@ import rocks.gdgmaceio.firedroid.preference.LoginPreference;
 
 public class LoginActivityFragment extends Fragment {
 
+    @Bind(R.id.root) View root;
     @Bind(R.id.email) EditText email;
     @Bind(R.id.password) EditText password;
 
@@ -81,7 +82,7 @@ public class LoginActivityFragment extends Fragment {
 
         @Override
         public void onAuthenticationError(FirebaseError firebaseError) {
-            Toast.makeText(LoginActivityFragment.this.getActivity(), "Can't auth user", Toast.LENGTH_SHORT).show();
+            Snackbar.make(root, "Can't auth user", Snackbar.LENGTH_SHORT).show();
             dissmissProgressDialog();
         }
     };
@@ -95,13 +96,13 @@ public class LoginActivityFragment extends Fragment {
     private Firebase.ResultHandler resetPasswordListener = new Firebase.ResultHandler() {
         @Override
         public void onSuccess() {
-            Toast.makeText(LoginActivityFragment.this.getActivity(), "Hey, look at your email!", Toast.LENGTH_SHORT).show();
+            Snackbar.make(root, "Hey, look at your email!", Snackbar.LENGTH_SHORT).show();
             dissmissProgressDialog();
         }
 
         @Override
         public void onError(FirebaseError firebaseError) {
-            Toast.makeText(LoginActivityFragment.this.getActivity(), "Error segind password change email", Toast.LENGTH_SHORT).show();
+            Snackbar.make(root, "Error segind password change email", Snackbar.LENGTH_SHORT).show();
             dissmissProgressDialog();
         }
     };
@@ -120,7 +121,7 @@ public class LoginActivityFragment extends Fragment {
 
         @Override
         public void onError(FirebaseError firebaseError) {
-            Toast.makeText(LoginActivityFragment.this.getActivity(), "Error creating new user", Toast.LENGTH_SHORT).show();
+            Snackbar.make(root, "Error creating new user", Snackbar.LENGTH_SHORT).show();
             dissmissProgressDialog();
         }
     };
