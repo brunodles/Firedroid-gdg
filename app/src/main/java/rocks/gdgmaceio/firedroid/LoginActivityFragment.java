@@ -1,6 +1,9 @@
 package rocks.gdgmaceio.firedroid;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -18,6 +21,10 @@ import com.firebase.client.FirebaseError;
 
 public class LoginActivityFragment extends Fragment {
 
+    private static final String PREF_PASSWORD = "password";
+    private static final String PREF_EMAIL = "email";
+    private static final String PREF_NAME_AUTH = "auth.preferences";
+
     private EditText email;
     private EditText password;
     private Button signIn;
@@ -25,6 +32,7 @@ public class LoginActivityFragment extends Fragment {
     private Button resetPassword;
 
     private Listener listener;
+    private ProgressDialog progressDialog;
 
     public LoginActivityFragment() {
     }
@@ -83,7 +91,7 @@ public class LoginActivityFragment extends Fragment {
     private Firebase.AuthResultHandler signInListener = new Firebase.AuthResultHandler() {
         @Override
         public void onAuthenticated(AuthData authData) {
-            goToChat();
+            loginSuccess();
         }
 
         @Override
@@ -131,13 +139,19 @@ public class LoginActivityFragment extends Fragment {
             unLock();
         }
     };
-    
-    private void lock(){
+
+    private void lock() {
         changeViewsEnabled(false);
+        progressDialog = ProgressDialog.show(getActivity(), "Login", "Please wait", true, false);
+        progressDialog.show();
     }
 
-    private void unLock(){
+    private void unLock() {
         changeViewsEnabled(true);
+        if (progressDialog != null) {
+            progressDialog.hide();
+            progressDialog = null;
+        }
     }
 
     private void changeViewsEnabled(boolean isEnabled) {
@@ -148,8 +162,35 @@ public class LoginActivityFragment extends Fragment {
         resetPassword.setEnabled(isEnabled);
     }
 
-    public void goToChat() {
+    public void loginSuccess() {
+        saveLoginData();
         listener.goToChat();
+    }
+
+    private void saveLoginData() {
+        String email = emailAsString();
+        String password = passwordAsString();
+
+        SharedPreferences.Editor preferences = getAuthPreferences().edit();
+        preferences.putString(PREF_EMAIL, email);
+        preferences.putString(PREF_PASSWORD, password);
+        preferences.apply();
+    }
+
+    private SharedPreferences getAuthPreferences() {
+        return getActivity().getSharedPreferences(PREF_NAME_AUTH, Context.MODE_PRIVATE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        restoreLoginData();
+    }
+
+    private void restoreLoginData() {
+        SharedPreferences preferences = getAuthPreferences();
+        email.setText(preferences.getString(PREF_EMAIL, ""));
+        password.setText(preferences.getString(PREF_PASSWORD, ""));
     }
 
     public static interface Listener {
