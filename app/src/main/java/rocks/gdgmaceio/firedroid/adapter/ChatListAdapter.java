@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import rocks.gdgmaceio.firedroid.R;
+import rocks.gdgmaceio.firedroid.model.Message;
 
 /**
  * Created by bruno on 21/08/15.
@@ -21,7 +22,7 @@ import rocks.gdgmaceio.firedroid.R;
 public class ChatListAdapter extends BaseAdapter implements ChildEventListener {
 
     private List<String> keys;
-    private List<DataSnapshot> models;
+    private List<Message> models;
 
     public ChatListAdapter(Query query) {
         keys = new LinkedList<>();
@@ -47,19 +48,20 @@ public class ChatListAdapter extends BaseAdapter implements ChildEventListener {
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
         String key = dataSnapshot.getKey();
+        Message message = dataSnapshot.getValue(Message.class);
 
         if (s == null) {
             keys.add(0, key);
-            models.add(0, dataSnapshot);
+            models.add(0, message);
         } else {
             int previousIndex = key.indexOf(s);
             int nextIndex = previousIndex + 1;
             if (nextIndex == models.size()) {
                 keys.add(key);
-                models.add(dataSnapshot);
+                models.add(message);
             } else {
                 keys.add(nextIndex, key);
-                models.add(dataSnapshot);
+                models.add(message);
             }
         }
         notifyDataSetChanged();
@@ -69,7 +71,7 @@ public class ChatListAdapter extends BaseAdapter implements ChildEventListener {
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
         String key = dataSnapshot.getKey();
         int index = keys.indexOf(key);
-        models.set(index, dataSnapshot);
+        models.set(index, dataSnapshot.getValue(Message.class));
         notifyDataSetChanged();
     }
 
@@ -113,9 +115,9 @@ public class ChatListAdapter extends BaseAdapter implements ChildEventListener {
             message = (TextView) view.findViewById(R.id.message);
         }
 
-        public void update(DataSnapshot dataSnapshot) {
-            String text = (String) dataSnapshot.child("text").getValue();
-            message.setText(text);
+        public void update(Message message) {
+            String text = message.text;
+            this.message.setText(text);
         }
     }
 }

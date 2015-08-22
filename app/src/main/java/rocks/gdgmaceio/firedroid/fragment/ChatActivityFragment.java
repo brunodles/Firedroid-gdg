@@ -19,6 +19,7 @@ import com.firebase.client.Firebase;
 import rocks.gdgmaceio.firedroid.adapter.ChatListAdapter;
 import rocks.gdgmaceio.firedroid.helper.FirebaseHelper;
 import rocks.gdgmaceio.firedroid.R;
+import rocks.gdgmaceio.firedroid.model.Message;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -79,11 +80,15 @@ public class ChatActivityFragment extends Fragment {
 
     private void sendMessage() {
         Firebase firebase = FirebaseHelper.get();
-        Firebase messageRef = firebase.child("messages").push();
-        messageRef.child("text").setValue(message.getText().toString());
-        messageRef.child("author").setValue(firebase.getAuth().getUid());
 
-        message.setText("");
+        String text = message.getText().toString();
+        String uid = firebase.getAuth().getUid();
+
+        firebase.child("messages")
+                .push()
+                .setValue(new Message(text, uid));
+
+        this.message.setText("");
     }
 
     DataSetObserver dataSetObserver = new DataSetObserver() {
