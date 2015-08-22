@@ -9,17 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rocks.gdgmaceio.firedroid.R;
 import rocks.gdgmaceio.firedroid.adapter.ChatListAdapter;
 import rocks.gdgmaceio.firedroid.helper.FirebaseHelper;
-import rocks.gdgmaceio.firedroid.model.Message;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -28,9 +29,8 @@ public class ChatActivityFragment extends Fragment {
 
     private static final String TAG = "ChatActivityFragment";
 
-    private EditText message;
-    private ListView messages;
-    private Button send;
+    @Bind(R.id.message) EditText message;
+    @Bind(R.id.messages) ListView messages;
 
     private ChatListAdapter adapter;
 
@@ -46,11 +46,7 @@ public class ChatActivityFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        message = (EditText) view.findViewById(R.id.message);
-        messages = (ListView) view.findViewById(R.id.messages);
-        send = (Button) view.findViewById(R.id.send);
-
-        send.setOnClickListener(onSendClickListener);
+        ButterKnife.bind(this, view);
         message.setOnEditorActionListener(onEditorActionListener);
 
         final Firebase messagesRef = FirebaseHelper.messages();
@@ -71,14 +67,8 @@ public class ChatActivityFragment extends Fragment {
         }
     };
 
-    private View.OnClickListener onSendClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            sendMessage();
-        }
-    };
-
-    private void sendMessage() {
+    @OnClick(R.id.send)
+    public void sendMessage() {
         String text = message.getText().toString();
         FirebaseHelper.sendMessage(text);
         this.message.setText("");

@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -16,6 +15,9 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rocks.gdgmaceio.firedroid.R;
 import rocks.gdgmaceio.firedroid.helper.FirebaseHelper;
 import rocks.gdgmaceio.firedroid.preference.LoginPreference;
@@ -23,11 +25,8 @@ import rocks.gdgmaceio.firedroid.preference.LoginPreference;
 
 public class LoginActivityFragment extends Fragment {
 
-    private EditText email;
-    private EditText password;
-    private Button signIn;
-    private Button signUp;
-    private Button resetPassword;
+    @Bind(R.id.email) EditText email;
+    @Bind(R.id.password) EditText password;
 
     private Listener listener;
     private ProgressDialog progressDialog;
@@ -53,28 +52,16 @@ public class LoginActivityFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        email = (EditText) view.findViewById(R.id.email);
-        password = (EditText) view.findViewById(R.id.password);
-
-        signIn = (Button) view.findViewById(R.id.sign_in);
-        signUp = (Button) view.findViewById(R.id.sign_up);
-        resetPassword = (Button) view.findViewById(R.id.reset_password);
-
-        signIn.setOnClickListener(onSignInClickListener);
-        signUp.setOnClickListener(onSignUpClickListener);
-        resetPassword.setOnClickListener(onResetPasswordClickListener);
+        ButterKnife.bind(this, view);
     }
 
-    private View.OnClickListener onSignInClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            lock();
-
-            Firebase firebase = FirebaseHelper.get();
-            firebase.unauth();
-            firebase.authWithPassword(emailAsString(), passwordAsString(), signInListener);
-        }
-    };
+    @OnClick(R.id.sign_in)
+    public void onSignInClick() {
+        showProgressDialog();
+        Firebase firebase = FirebaseHelper.get();
+        firebase.unauth();
+        firebase.authWithPassword(emailAsString(), passwordAsString(), signInListener);
+    }
 
     @NonNull
     private String passwordAsString() {
@@ -95,74 +82,64 @@ public class LoginActivityFragment extends Fragment {
         @Override
         public void onAuthenticationError(FirebaseError firebaseError) {
             Toast.makeText(LoginActivityFragment.this.getActivity(), "Can't auth user", Toast.LENGTH_SHORT).show();
-            unLock();
+            dissmissProgressDialog();
         }
     };
-    private View.OnClickListener onResetPasswordClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            FirebaseHelper.get().resetPassword(emailAsString(), resetPasswordListener);
-            lock();
-        }
-    };
+
+    @OnClick(R.id.reset_password)
+    public void onResetPasswordClick() {
+        FirebaseHelper.get().resetPassword(emailAsString(), resetPasswordListener);
+        showProgressDialog();
+    }
+
     private Firebase.ResultHandler resetPasswordListener = new Firebase.ResultHandler() {
         @Override
         public void onSuccess() {
             Toast.makeText(LoginActivityFragment.this.getActivity(), "Hey, look at your email!", Toast.LENGTH_SHORT).show();
-            unLock();
+            dissmissProgressDialog();
         }
 
         @Override
         public void onError(FirebaseError firebaseError) {
             Toast.makeText(LoginActivityFragment.this.getActivity(), "Error segind password change email", Toast.LENGTH_SHORT).show();
-            unLock();
+            dissmissProgressDialog();
         }
     };
-    private View.OnClickListener onSignUpClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            FirebaseHelper.get().createUser(emailAsString(), passwordAsString(), registerListener);
-            lock();
-        }
-    };
+
+    @OnClick(R.id.sign_up)
+    public void onSignUpClick() {
+        FirebaseHelper.get().createUser(emailAsString(), passwordAsString(), registerListener);
+        showProgressDialog();
+    }
+
     private Firebase.ResultHandler registerListener = new Firebase.ResultHandler() {
         @Override
         public void onSuccess() {
-            onSignInClickListener.onClick(signIn);
+            onSignUpClick();
         }
 
         @Override
         public void onError(FirebaseError firebaseError) {
             Toast.makeText(LoginActivityFragment.this.getActivity(), "Error creating new user", Toast.LENGTH_SHORT).show();
-            unLock();
+            dissmissProgressDialog();
         }
     };
 
-    private void lock() {
-        changeViewsEnabled(false);
+    private void showProgressDialog() {
         progressDialog = ProgressDialog.show(getActivity(), "Login", "Please wait", true, false);
         progressDialog.show();
     }
 
-    private void unLock() {
-        changeViewsEnabled(true);
+    private void dissmissProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
             progressDialog = null;
         }
     }
 
-    private void changeViewsEnabled(boolean isEnabled) {
-        email.setEnabled(isEnabled);
-        password.setEnabled(isEnabled);
-        signIn.setEnabled(isEnabled);
-        signUp.setEnabled(isEnabled);
-        resetPassword.setEnabled(isEnabled);
-    }
-
     public void loginSuccess() {
         saveLoginData();
-        unLock();
+        dissmissProgressDialog();
         listener.goToChat();
     }
 
@@ -172,7 +149,6 @@ public class LoginActivityFragment extends Fragment {
         preference.setPassword(passwordAsString());
         preference.apply();
     }
-
 
     @Override
     public void onResume() {

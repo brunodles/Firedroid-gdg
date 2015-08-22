@@ -13,6 +13,8 @@ import com.firebase.client.Query;
 import java.util.LinkedList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rocks.gdgmaceio.firedroid.R;
 import rocks.gdgmaceio.firedroid.model.Message;
 
@@ -109,10 +111,10 @@ public class ChatListAdapter extends BaseAdapter implements ChildEventListener {
     }
 
     public static class ViewHolder {
-        TextView message;
+        @Bind(R.id.message) TextView message;
 
         public ViewHolder(View view) {
-            message = (TextView) view.findViewById(R.id.message);
+            ButterKnife.bind(this, view);
         }
 
         public void update(Message message) {
