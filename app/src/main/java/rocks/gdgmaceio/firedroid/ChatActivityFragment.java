@@ -1,5 +1,6 @@
 package rocks.gdgmaceio.firedroid;
 
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -26,6 +27,8 @@ public class ChatActivityFragment extends Fragment {
     private ListView messages;
     private Button send;
 
+    private ChatListAdapter adapter;
+
     public ChatActivityFragment() {
     }
 
@@ -44,6 +47,11 @@ public class ChatActivityFragment extends Fragment {
 
         send.setOnClickListener(onSendClickListener);
         message.setOnEditorActionListener(onEditorActionListener);
+
+        final Firebase messagesRef = FirebaseHelper.get().child("messages");
+        adapter = new ChatListAdapter(messagesRef.limitToLast(50));
+        messages.setAdapter(adapter);
+        adapter.registerDataSetObserver(dataSetObserver);
     }
 
     TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
@@ -74,11 +82,16 @@ public class ChatActivityFragment extends Fragment {
         message.setText("");
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Firebase messagesRef = FirebaseHelper.get().child("messages");
-        ChatListAdapter adapter = new ChatListAdapter(messagesRef.limitToLast(50));
-        this.messages.setAdapter(adapter);
-    }
+    DataSetObserver dataSetObserver = new DataSetObserver() {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            messages.post(new Runnable() {
+                @Override
+                public void run() {
+                    messages.smoothScrollToPosition(adapter.getCount() - 1);
+                }
+            });
+        }
+    };
 }
