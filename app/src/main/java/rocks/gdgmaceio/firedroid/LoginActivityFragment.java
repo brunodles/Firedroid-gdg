@@ -149,7 +149,7 @@ public class LoginActivityFragment extends Fragment {
     private void unLock() {
         changeViewsEnabled(true);
         if (progressDialog != null) {
-            progressDialog.hide();
+            progressDialog.dismiss();
             progressDialog = null;
         }
     }
@@ -164,6 +164,7 @@ public class LoginActivityFragment extends Fragment {
 
     public void loginSuccess() {
         saveLoginData();
+        unLock();
         listener.goToChat();
     }
 
