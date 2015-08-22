@@ -1,4 +1,4 @@
-package rocks.gdgmaceio.firedroid;
+package rocks.gdgmaceio.firedroid.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -17,6 +17,9 @@ import android.widget.Toast;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+
+import rocks.gdgmaceio.firedroid.helper.FirebaseHelper;
+import rocks.gdgmaceio.firedroid.R;
 
 
 public class LoginActivityFragment extends Fragment {

@@ -1,4 +1,4 @@
-package rocks.gdgmaceio.firedroid;
+package rocks.gdgmaceio.firedroid.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +12,8 @@ import com.firebase.client.Query;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import rocks.gdgmaceio.firedroid.R;
 
 /**
  * Created by bruno on 21/08/15.

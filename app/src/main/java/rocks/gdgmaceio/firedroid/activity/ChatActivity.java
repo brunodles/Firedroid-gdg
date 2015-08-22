@@ -1,9 +1,11 @@
-package rocks.gdgmaceio.firedroid;
+package rocks.gdgmaceio.firedroid.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import rocks.gdgmaceio.firedroid.R;
 
 public class ChatActivity extends AppCompatActivity {
 

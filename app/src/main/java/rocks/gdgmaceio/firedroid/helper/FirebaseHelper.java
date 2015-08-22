@@ -1,4 +1,4 @@
-package rocks.gdgmaceio.firedroid;
+package rocks.gdgmaceio.firedroid.helper;
 
 import com.firebase.client.Firebase;
 

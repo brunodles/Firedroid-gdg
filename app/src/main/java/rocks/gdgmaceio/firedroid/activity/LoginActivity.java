@@ -1,8 +1,11 @@
-package rocks.gdgmaceio.firedroid;
+package rocks.gdgmaceio.firedroid.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import rocks.gdgmaceio.firedroid.fragment.LoginActivityFragment;
+import rocks.gdgmaceio.firedroid.R;
 
 public class LoginActivity extends AppCompatActivity implements LoginActivityFragment.Listener {
 

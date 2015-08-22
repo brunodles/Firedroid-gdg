@@ -1,4 +1,4 @@
-package rocks.gdgmaceio.firedroid;
+package rocks.gdgmaceio.firedroid.fragment;
 
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -15,6 +15,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+
+import rocks.gdgmaceio.firedroid.adapter.ChatListAdapter;
+import rocks.gdgmaceio.firedroid.helper.FirebaseHelper;
+import rocks.gdgmaceio.firedroid.R;
 
 /**
  * A placeholder fragment containing a simple view.
