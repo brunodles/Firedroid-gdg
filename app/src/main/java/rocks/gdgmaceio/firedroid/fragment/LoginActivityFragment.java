@@ -2,8 +2,6 @@ package rocks.gdgmaceio.firedroid.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -18,15 +16,12 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
-import rocks.gdgmaceio.firedroid.helper.FirebaseHelper;
 import rocks.gdgmaceio.firedroid.R;
+import rocks.gdgmaceio.firedroid.helper.FirebaseHelper;
+import rocks.gdgmaceio.firedroid.preference.LoginPreference;
 
 
 public class LoginActivityFragment extends Fragment {
-
-    private static final String PREF_PASSWORD = "password";
-    private static final String PREF_EMAIL = "email";
-    private static final String PREF_NAME_AUTH = "auth.preferences";
 
     private EditText email;
     private EditText password;
@@ -172,18 +167,12 @@ public class LoginActivityFragment extends Fragment {
     }
 
     private void saveLoginData() {
-        String email = emailAsString();
-        String password = passwordAsString();
-
-        SharedPreferences.Editor preferences = getAuthPreferences().edit();
-        preferences.putString(PREF_EMAIL, email);
-        preferences.putString(PREF_PASSWORD, password);
-        preferences.apply();
+        LoginPreference preference = new LoginPreference(getActivity());
+        preference.setEmail(emailAsString());
+        preference.setPassword(passwordAsString());
+        preference.apply();
     }
 
-    private SharedPreferences getAuthPreferences() {
-        return getActivity().getSharedPreferences(PREF_NAME_AUTH, Context.MODE_PRIVATE);
-    }
 
     @Override
     public void onResume() {
@@ -192,9 +181,9 @@ public class LoginActivityFragment extends Fragment {
     }
 
     private void restoreLoginData() {
-        SharedPreferences preferences = getAuthPreferences();
-        email.setText(preferences.getString(PREF_EMAIL, ""));
-        password.setText(preferences.getString(PREF_PASSWORD, ""));
+        LoginPreference preferences = new LoginPreference(getActivity());
+        email.setText(preferences.getEmail());
+        password.setText(preferences.getPassword());
     }
 
     public static interface Listener {
